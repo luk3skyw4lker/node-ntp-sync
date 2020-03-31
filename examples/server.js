@@ -1,6 +1,6 @@
 const Server = require("../index").Server;
-const server = new Server(function(message) {
-  console.log("server message:", message);
+const server = new Server(function(message, response) {
+  console.log("Server message:", message);
   message.transmitTimestamp = Date.now();
 
   response(message);
