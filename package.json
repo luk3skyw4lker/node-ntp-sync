@@ -1,0 +1,10 @@
+{
+  "name": "ntp-sync",
+  "version": "1.0.0",
+  "description": "A ntp library for nodejs",
+  "main": "index.js",
+  "repository": "https://github.com/luk3skyw4lker/node-ntp-sync.git",
+  "author": "Lucas Henrique",
+  "license": "MIT",
+  "private": false
+}
