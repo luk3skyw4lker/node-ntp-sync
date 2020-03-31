@@ -1,5 +1,5 @@
 {
-  "name": "ntp-sync",
+  "name": "ntp-time",
   "version": "1.0.0",
   "description": "A ntp library for nodejs",
   "main": "index.js",
