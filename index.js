@@ -1,5 +1,7 @@
 const Client = require("./src/client");
+const Server = require("./src/server");
 
 module.exports = {
-  Client
+  Client,
+  Server
 };
