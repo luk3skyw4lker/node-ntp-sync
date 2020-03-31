@@ -14,7 +14,7 @@ With [yarn](https://yarnpkg.com):
 
 ## Client
 
-To instantiante an NTP Client you just have to require the client class from the module and then instantiate it inside your code. To get the time you must use the `syncTime` method.
+To instantiate an NTP Client you just have to require the client class from the module and then instantiate it inside your code. To get the time you must use the `syncTime` method.
 
 ### client.js
 
@@ -31,7 +31,7 @@ client.syncTime((err, result) => {
 
 ## Server
 
-To put a server, you must require the server class from the `ntp-sync` module, pass a request callback to it and use the listen method, with a port and an callback as an argument. Inside the request callback you can manipulate the message the way you want.
+To put a server up, you must require the server class from the `ntp-sync` module, pass a request callback to it and use the listen method, with a port and an callback as an argument. Inside the request callback you can manipulate the message the way you want.
 
 ### server.js
 
