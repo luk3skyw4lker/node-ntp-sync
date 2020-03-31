@@ -58,16 +58,21 @@ class Client {
     this.socket.send(packet, 0, packet.length, port, server, err => {
       if (err) return callback(err, null);
 
-      this.socket.once("message", data => {
-        this.socket.close();
+      setTimeout(() => {
+        const error = new Error(
+          "NTP request timed out, server didn't answered"
+        );
+      }, timeout);
 
+      this.socket.once("message", data => {
+        clearTimeout();
+
+        this.socket.close();
         const message = parse(data);
 
-        callback(err, message);
+        return callback(err, message);
       });
     });
-
-    return this;
   }
 }
 
