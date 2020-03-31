@@ -20,7 +20,7 @@ To instantiate an NTP Client you just have to require the client class from the 
 
 ```javascript
 const NTP = require("ntp-sync").Client;
-const client = new NTP("pool.ntp.org", 123, { timeout: 5000 });
+const client = new NTP("a.st1.ntp.br", 123, { timeout: 5000 });
 
 client.syncTime((err, result) => {
   if (err) throw err;
