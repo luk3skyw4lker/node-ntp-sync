@@ -48,14 +48,16 @@ class Client {
   }
 
   syncTime(callback) {
+    this.socket = udp.createSocket("udp4");
+
     const {
       server,
       port,
-      options: { timeout }
+      options: { timeout },
     } = this;
     const packet = createPacket();
 
-    this.socket.send(packet, 0, packet.length, port, server, err => {
+    this.socket.send(packet, 0, packet.length, port, server, (err) => {
       if (err) return callback(err, null);
 
       const timer = setTimeout(() => {
@@ -66,7 +68,7 @@ class Client {
         callback(error, null);
       }, timeout);
 
-      this.socket.once("message", data => {
+      this.socket.once("message", (data) => {
         clearTimeout(timer);
 
         this.socket.close();

@@ -1,14 +1,14 @@
-# ntp-sync
+# ntp-time
 
 ## Installation
 
 With [npm](https://npmjs.com):
 
-    npm install ntp-sync
+    npm install ntp-time
 
 With [yarn](https://yarnpkg.com):
 
-    yarn add ntp-sync
+    yarn add ntp-time
 
 # Methods and usage
 
@@ -19,7 +19,7 @@ To instantiate an NTP Client you just have to require the client class from the 
 ### client.js
 
 ```javascript
-const NTP = require("ntp-sync").Client;
+const NTP = require("ntp-time").Client;
 const client = new NTP("a.st1.ntp.br", 123, { timeout: 5000 });
 
 client.syncTime((err, result) => {
@@ -31,19 +31,19 @@ client.syncTime((err, result) => {
 
 ## Server
 
-To put a server up, you must require the server class from the `ntp-sync` module, pass a request callback to it and use the listen method, with a port and an callback as an argument. Inside the request callback you can manipulate the message the way you want.
+To put a server up, you must require the server class from the `ntp-time` module, pass a request callback to it and use the listen method, with a port and an callback as an argument. Inside the request callback you can manipulate the message the way you want.
 
 ### server.js
 
 ```javascript
-const NTPServer = require("ntp-sync").Server;
+const NTPServer = require("ntp-time").Server;
 const server = new NTPServer((message, response) => {
   message.transmitTimestamp = Date.now();
 
   response(message);
 });
 
-server.listen(3000, err => {
+server.listen(3000, (err) => {
   if (err) throw err;
 
   console.log("Server listening");
