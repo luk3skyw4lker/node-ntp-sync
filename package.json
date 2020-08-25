@@ -1,15 +1,15 @@
 {
-  "name": "ntp-time",
-  "version": "1.0.0",
-  "description": "A ntp library for nodejs",
-  "main": "index.js",
-  "repository": "https://github.com/luk3skyw4lker/node-ntp-sync.git",
-  "author": "Lucas Henrique",
-  "license": "MIT",
-  "private": false,
-  "keywords": [
-    "ntp",
-    "time",
-    "date"
-  ]
+	"name": "ntp-time",
+	"version": "1.1.0",
+	"description": "A ntp library for nodejs",
+	"main": "index.js",
+	"repository": "https://github.com/luk3skyw4lker/node-ntp-sync.git",
+	"author": "Lucas Henrique",
+	"license": "MIT",
+	"private": false,
+	"keywords": [
+		"ntp",
+		"time",
+		"date"
+	]
 }

@@ -22,11 +22,21 @@ To instantiate an NTP Client you just have to require the client class from the 
 const NTP = require("ntp-time").Client;
 const client = new NTP("a.st1.ntp.br", 123, { timeout: 5000 });
 
-client.syncTime((err, result) => {
-  if (err) throw err;
+async function sync() {
+	try {
+		await client.syncTime();
+	} catch (err) {
+		console.log(err);
+	}
+}
 
-  console.log(result);
-});
+sync();
+// Or using .then
+
+client
+	.syncTime()
+	.then((time) => console.log(time)) // time is the whole NTP packet
+	.catch(console.log);
 ```
 
 ## Server
