@@ -47,16 +47,20 @@ To put a server up, you must require the server class from the `ntp-time` module
 
 ```javascript
 const NTPServer = require("ntp-time").Server;
-const server = new NTPServer((message, response) => {
-  message.transmitTimestamp = Date.now();
+const server = new NTPServer();
 
-  response(message);
+// Define your custom handler for requisitions
+server.handle((message, response) => {
+	console.log("Server message:", message);
+	message.transmitTimestamp = Date.now();
+
+	response(message);
 });
 
 server.listen(3000, (err) => {
-  if (err) throw err;
+	if (err) throw err;
 
-  console.log("Server listening");
+	console.log("Server listening");
 });
 ```
 

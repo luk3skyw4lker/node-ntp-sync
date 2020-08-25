@@ -1,13 +1,15 @@
 const Server = require("../index").Server;
-const server = new Server(function(message, response) {
-  console.log("Server message:", message);
-  message.transmitTimestamp = Date.now();
+const server = new Server();
 
-  response(message);
+server.handle((message, response) => {
+	console.log("Server message:", message);
+	message.transmitTimestamp = Date.now();
+
+	response(message);
 });
 
-server.listen(3000, err => {
-  if (err) throw err;
+server.listen(3000, (err) => {
+	if (err) throw err;
 
-  console.log("Server listening on:", 3000);
+	console.log("Server listening on:", 3000);
 });

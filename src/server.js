@@ -3,44 +3,46 @@ const EventEmitter = require("events");
 const Packet = require("./packet");
 
 class Server extends EventEmitter {
-  constructor(reqCallback, options = {}) {
-    super();
+	constructor() {
+		super();
 
-    this.socket = udp.createSocket("udp4");
-    this.socket.on("message", this.parse.bind(this));
+		this.socket = udp.createSocket("udp4");
+		this.socket.on("message", this.parse.bind(this));
 
-    if (reqCallback) this.on("request", reqCallback);
+		return this;
+	}
 
-    return this;
-  }
+	handle(handler) {
+		this.on("request", handler);
+	}
 
-  send(rinfo, message, callback) {
-    if (message instanceof Packet) {
-      message.mode = Packet.MODES.SERVER; // mark mode as server
-      message = message.toBuffer();
-    }
+	send(rinfo, message, callback) {
+		if (message instanceof Packet) {
+			message.mode = Packet.MODES.SERVER; // mark mode as server
+			message = message.toBuffer();
+		}
 
-    this.socket.send(message, rinfo.port, rinfo.server, callback);
-    return this;
-  }
+		this.socket.send(message, rinfo.port, rinfo.server, callback);
+		return this;
+	}
 
-  listen(port, address) {
-    this.socket.bind(port || 4567, address);
+	listen(port, address) {
+		this.socket.bind(port || 4567, address);
 
-    return this;
-  }
+		return this;
+	}
 
-  address() {
-    return this.socket.address();
-  }
+	address() {
+		return this.socket.address();
+	}
 
-  parse(message, rinfo) {
-    const packet = Packet.parse(message);
-    packet.receiveTimestamp = Date.now();
+	parse(message, rinfo) {
+		const packet = Packet.parse(message);
+		packet.receiveTimestamp = Date.now();
 
-    this.emit("request", packet, this.send.bind(this, rinfo));
-    return;
-  }
+		this.emit("request", packet, this.send.bind(this, rinfo));
+		return;
+	}
 }
 
 module.exports = Server;
