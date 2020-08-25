@@ -31,6 +31,7 @@ async function sync() {
 }
 
 sync();
+
 // Or using .then
 
 client
@@ -49,7 +50,7 @@ To put a server up, you must require the server class from the `ntp-time` module
 const NTPServer = require("ntp-time").Server;
 const server = new NTPServer();
 
-// Define your custom handler for requisitions
+// Define your custom handler for requests
 server.handle((message, response) => {
 	console.log("Server message:", message);
 	message.transmitTimestamp = Date.now();
