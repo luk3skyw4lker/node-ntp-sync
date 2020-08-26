@@ -18,10 +18,16 @@ export interface NTPPacket {
 	t: number;
 }
 
+export interface NTPOptions {
+	timeout: number;
+}
+
 declare class Client {
+	constructor(server?: string, port?: number, options?: NTPOptions);
 	syncTime(): Promise<NTPPacket>;
 }
 
 declare class Server {
+	constructor();
 	handle(handler: Function): void;
 }
