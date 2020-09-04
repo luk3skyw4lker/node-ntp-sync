@@ -1,5 +1,7 @@
 # ntp-time
 
+[![NPM](https://nodei.co/npm/ntp-time.png?compact=true)](https://nodei.co/npm/ntp-time/)
+
 ## Installation
 
 With [npm](https://npmjs.com):
