@@ -1,19 +1,19 @@
-const udp = require("dgram");
-const EventEmitter = require("events");
-const Packet = require("./packet");
+const udp = require('dgram');
+const EventEmitter = require('events');
+const Packet = require('./packet');
 
 class Server extends EventEmitter {
 	constructor() {
 		super();
 
-		this.socket = udp.createSocket("udp4");
-		this.socket.on("message", this.parse.bind(this));
+		this.socket = udp.createSocket('udp4');
+		this.socket.on('message', this.parse.bind(this));
 
 		return this;
 	}
 
 	handle(handler) {
-		this.on("request", handler);
+		this.on('request', handler);
 	}
 
 	send(rinfo, message, callback) {
@@ -40,7 +40,7 @@ class Server extends EventEmitter {
 		const packet = Packet.parse(message);
 		packet.receiveTimestamp = Date.now();
 
-		this.emit("request", packet, this.send.bind(this, rinfo));
+		this.emit('request', packet, this.send.bind(this, rinfo));
 		return;
 	}
 }

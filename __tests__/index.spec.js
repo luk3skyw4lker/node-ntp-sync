@@ -1,6 +1,6 @@
-const Client = require("../index").Client;
+const Client = require('../index').Client;
 
-test("Sync time", async () => {
+test('Sync time', async () => {
 	const NTPClient = new Client();
 	const date = new Date();
 

@@ -1,6 +1,6 @@
-const udp = require("dgram");
+const udp = require('dgram');
 
-const Packet = require("./packet");
+const Packet = require('./packet');
 
 function createPacket() {
 	const packet = new Packet();
@@ -38,13 +38,13 @@ function parse(buffer) {
 
 class Client {
 	constructor(
-		server = "pool.ntp.org",
+		server = 'pool.ntp.org',
 		port = 123,
 		options = { timeout: 3000 }
 	) {
 		this.server = server;
 		this.port = port;
-		this.socket = udp.createSocket("udp4");
+		this.socket = udp.createSocket('udp4');
 		this.options = options;
 
 		return this;
@@ -52,7 +52,7 @@ class Client {
 
 	async syncTime() {
 		return new Promise((resolve, reject) => {
-			this.socket = udp.createSocket("udp4");
+			this.socket = udp.createSocket('udp4');
 
 			const {
 				server,
@@ -62,7 +62,7 @@ class Client {
 
 			const packet = createPacket();
 
-			this.socket.send(packet, 0, packet.length, port, server, (err) => {
+			this.socket.send(packet, 0, packet.length, port, server, err => {
 				if (err) return reject(err);
 
 				const timer = setTimeout(() => {
@@ -73,7 +73,7 @@ class Client {
 					return reject(error);
 				}, timeout);
 
-				this.socket.once("message", (data) => {
+				this.socket.once('message', data => {
 					clearTimeout(timer);
 
 					const message = parse(data);
