@@ -21,8 +21,8 @@ To instantiate an NTP Client you just have to require the client class from the 
 ### client.js
 
 ```javascript
-const NTP = require("ntp-time").Client;
-const client = new NTP("a.st1.ntp.br", 123, { timeout: 5000 });
+const NTP = require('ntp-time').Client;
+const client = new NTP('a.st1.ntp.br', 123, { timeout: 5000 });
 
 async function sync() {
 	try {
@@ -38,7 +38,7 @@ sync();
 
 client
 	.syncTime()
-	.then((time) => console.log(time)) // time is the whole NTP packet
+	.then(time => console.log(time)) // time is the whole NTP packet
 	.catch(console.log);
 ```
 
@@ -49,21 +49,25 @@ To put a server up, you must require the server class from the `ntp-time` module
 ### server.js
 
 ```javascript
-const NTPServer = require("ntp-time").Server;
+const NTPServer = require('ntp-time').Server;
 const server = new NTPServer();
 
 // Define your custom handler for requests
 server.handle((message, response) => {
-	console.log("Server message:", message);
-	message.transmitTimestamp = Date.now();
+	console.log('Server message:', message);
+
+	message.transmitTimestamp = Math.floor(Date.now() / 1000);
 
 	response(message);
 });
 
-server.listen(3000, (err) => {
+// Check if node has the necessary permissions
+// to listen on ports less than 1024
+// https://stackoverflow.com/questions/413807/is-there-a-way-for-non-root-processes-to-bind-to-privileged-ports-on-linux
+server.listen(123, err => {
 	if (err) throw err;
 
-	console.log("Server listening");
+	console.log('Server listening');
 });
 ```
 
