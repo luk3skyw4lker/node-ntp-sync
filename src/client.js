@@ -1,20 +1,22 @@
-const udp = require("dgram");
+const udp = require('dgram');
 
-const Packet = require("./packet");
+const { NTPPacket, MODES } = require('./packet');
+
+const NTP_DELTA = 2208988800;
 
 function createPacket() {
-	const packet = new Packet();
+	const packet = new NTPPacket(MODES.CLIENT);
 
-	packet.mode = Packet.MODES.CLIENT;
-	packet.originateTimestamp = Date.now();
+	packet.originateTimestamp = Math.floor(Date.now() / 1000);
 
-	return packet.toBuffer();
+	return packet.bufferize(packet);
 }
 
 function parse(buffer) {
-	const message = Packet.parse(buffer);
-	message.destinationTimestamp = Date.now();
-	message.time = new Date(message.transmitTimestamp);
+	const message = NTPPacket.parse(buffer);
+
+	message.destinationTimestamp = Math.floor(Date.now() / 1000) + NTP_DELTA;
+	message.time = new Date(Math.floor((message.rxTimestamp - NTP_DELTA) * 1000));
 
 	// Timestamp Name          ID   When Generated
 	// ------------------------------------------------------------
@@ -23,8 +25,8 @@ function parse(buffer) {
 	// Transmit Timestamp      T3   time reply sent by server
 	// Destination Timestamp   T4   time reply received by client
 	const T1 = message.originateTimestamp;
-	const T2 = message.receiveTimestamp;
-	const T3 = message.transmitTimestamp;
+	const T2 = message.rxTimestamp;
+	const T3 = message.txTimestamp;
 	const T4 = message.destinationTimestamp;
 
 	// The roundtrip delay d and system clock offset t are defined as:
@@ -38,13 +40,13 @@ function parse(buffer) {
 
 class Client {
 	constructor(
-		server = "pool.ntp.org",
+		server = 'pool.ntp.org',
 		port = 123,
 		options = { timeout: 3000 }
 	) {
 		this.server = server;
 		this.port = port;
-		this.socket = udp.createSocket("udp4");
+		this.socket = udp.createSocket('udp4');
 		this.options = options;
 
 		return this;
@@ -52,7 +54,7 @@ class Client {
 
 	async syncTime() {
 		return new Promise((resolve, reject) => {
-			this.socket = udp.createSocket("udp4");
+			this.socket = udp.createSocket('udp4');
 
 			const {
 				server,
@@ -62,7 +64,7 @@ class Client {
 
 			const packet = createPacket();
 
-			this.socket.send(packet, 0, packet.length, port, server, (err) => {
+			this.socket.send(packet, 0, packet.length, port, server, err => {
 				if (err) return reject(err);
 
 				const timer = setTimeout(() => {
@@ -73,12 +75,13 @@ class Client {
 					return reject(error);
 				}, timeout);
 
-				this.socket.once("message", (data) => {
+				this.socket.once('message', data => {
 					clearTimeout(timer);
 
 					const message = parse(data);
 
 					this.socket.close();
+
 					return resolve(message);
 				});
 			});
