@@ -1,6 +1,6 @@
 const udp = require('dgram');
 const EventEmitter = require('events');
-const Packet = require('./packet');
+const { NTPPacket, MODES } = require('./packet');
 
 class Server extends EventEmitter {
 	constructor() {
@@ -17,13 +17,15 @@ class Server extends EventEmitter {
 	}
 
 	send(rinfo, message, callback) {
-		if (message instanceof Packet) {
-			message.mode = Packet.MODES.SERVER; // mark mode as server
-			message = message.toBuffer();
-		}
+		if (message instanceof NTPPacket) {
+			const sendPackage = new NTPPacket(MODES.SERVER).bufferize(message);
 
-		this.socket.send(message, rinfo.port, rinfo.server, callback);
-		return this;
+			this.socket.send(sendPackage, rinfo.port, rinfo.server, callback);
+
+			return this;
+		} else {
+			throw new Error('Invalid response packet');
+		}
 	}
 
 	listen(port, address) {
@@ -37,10 +39,15 @@ class Server extends EventEmitter {
 	}
 
 	parse(message, rinfo) {
-		const packet = Packet.parse(message);
-		packet.receiveTimestamp = Date.now();
+		const packet = NTPPacket.parse(message);
+		const rxTimestamp = Math.floor(Date.now() / 1000);
+
+		packet.originateTimestamp = Math.floor(packet.txTimestamp);
+		packet.referenceTimestamp = rxTimestamp - 5;
+		packet.rxTimestamp = rxTimestamp;
 
 		this.emit('request', packet, this.send.bind(this, rinfo));
+
 		return;
 	}
 }

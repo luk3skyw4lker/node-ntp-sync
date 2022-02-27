@@ -1,20 +1,22 @@
 const udp = require('dgram');
 
-const Packet = require('./packet');
+const { NTPPacket, MODES } = require('./packet');
+
+const NTP_DELTA = 2208988800;
 
 function createPacket() {
-	const packet = new Packet();
+	const packet = new NTPPacket(MODES.CLIENT);
 
-	packet.mode = Packet.MODES.CLIENT;
-	packet.originateTimestamp = Date.now();
+	packet.originateTimestamp = Math.floor(Date.now() / 1000);
 
-	return packet.toBuffer();
+	return packet.bufferize(packet);
 }
 
 function parse(buffer) {
-	const message = Packet.parse(buffer);
-	message.destinationTimestamp = Date.now();
-	message.time = new Date(message.transmitTimestamp);
+	const message = NTPPacket.parse(buffer);
+
+	message.destinationTimestamp = Math.floor(Date.now() / 1000) + NTP_DELTA;
+	message.time = new Date(Math.floor((message.rxTimestamp - NTP_DELTA) * 1000));
 
 	// Timestamp Name          ID   When Generated
 	// ------------------------------------------------------------
@@ -23,8 +25,8 @@ function parse(buffer) {
 	// Transmit Timestamp      T3   time reply sent by server
 	// Destination Timestamp   T4   time reply received by client
 	const T1 = message.originateTimestamp;
-	const T2 = message.receiveTimestamp;
-	const T3 = message.transmitTimestamp;
+	const T2 = message.rxTimestamp;
+	const T3 = message.txTimestamp;
 	const T4 = message.destinationTimestamp;
 
 	// The roundtrip delay d and system clock offset t are defined as:
@@ -79,6 +81,7 @@ class Client {
 					const message = parse(data);
 
 					this.socket.close();
+
 					return resolve(message);
 				});
 			});
