@@ -20,7 +20,8 @@ class Server extends EventEmitter {
 		if (message instanceof NTPPacket) {
 			const sendPackage = new NTPPacket(MODES.SERVER).bufferize(message);
 
-			this.socket.send(sendPackage, rinfo.port, rinfo.server, callback);
+			console.log('node-ntp-sync::send', {message, rinfo});
+			this.socket.send(sendPackage, rinfo.port, rinfo.address, callback);
 
 			return this;
 		} else {
