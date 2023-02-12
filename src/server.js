@@ -39,7 +39,12 @@ class Server extends EventEmitter {
 	}
 
 	parse(message, rinfo) {
-		const packet = NTPPacket.parse(message);
+		let packet;
+		try {
+			packet = NTPPacket.parse(message);
+		} catch (e) {
+			return
+		}
 		const rxTimestamp = Math.floor(Date.now() / 1000);
 
 		packet.originateTimestamp = Math.floor(packet.txTimestamp);
