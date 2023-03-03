@@ -2,12 +2,24 @@ const udp = require('dgram');
 const EventEmitter = require('events');
 const { NTPPacket, MODES } = require('./packet');
 
+function defaultOnInvalidPacket(message, error) {
+	console.error('[node-ntp-sync] Invalid packet received', message, error.message)
+}
+
 class Server extends EventEmitter {
-	constructor() {
+	constructor(options) {
 		super();
+
+		options = options || {}
 
 		this.socket = udp.createSocket('udp4');
 		this.socket.on('message', this.parse.bind(this));
+
+		if (options.onInvalidPacket && typeof options.onInvalidPacket == 'function') {
+			this._onInvalidPacket = options.onInvalidPacket
+		} else {
+			this._onInvalidPacket = defaultOnInvalidPacket
+		}
 
 		return this;
 	}
@@ -42,7 +54,8 @@ class Server extends EventEmitter {
 		let packet;
 		try {
 			packet = NTPPacket.parse(message);
-		} catch (e) {
+		} catch (error) {
+			this._onInvalidPacket(message, error)
 			return
 		}
 		const rxTimestamp = Math.floor(Date.now() / 1000);
