@@ -51,20 +51,18 @@ class Server extends EventEmitter {
 	}
 
 	parse(message, rinfo) {
-		let packet;
 		try {
-			packet = NTPPacket.parse(message);
+			const packet = NTPPacket.parse(message);
+			const rxTimestamp = Math.floor(Date.now() / 1000);
+
+			packet.originateTimestamp = Math.floor(packet.txTimestamp);
+			packet.referenceTimestamp = rxTimestamp - 5;
+			packet.rxTimestamp = rxTimestamp;
+
+			this.emit('request', packet, this.send.bind(this, rinfo));
 		} catch (error) {
 			this._onInvalidPacket(message, error)
-			return
 		}
-		const rxTimestamp = Math.floor(Date.now() / 1000);
-
-		packet.originateTimestamp = Math.floor(packet.txTimestamp);
-		packet.referenceTimestamp = rxTimestamp - 5;
-		packet.rxTimestamp = rxTimestamp;
-
-		this.emit('request', packet, this.send.bind(this, rinfo));
 
 		return;
 	}
