@@ -27,7 +27,12 @@ declare class Client {
 	syncTime(): Promise<NTPPacket>;
 }
 
+export interface ServerOptions {
+	onInvalidPacket?: (message: string, error: any) => any;
+}
+
 declare class Server {
-	constructor();
+	constructor(options?: ServerOptions);
 	handle(handler: Function): void;
+	listen(port?: number, callback?: () => void): Server;
 }
