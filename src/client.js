@@ -65,13 +65,16 @@ class Client {
 			const packet = createPacket();
 
 			this.socket.send(packet, 0, packet.length, port, server, err => {
-				if (err) return reject(err);
+				if (err) {
+					this.socket.close();
+					return reject(err);
+				}
 
 				const timer = setTimeout(() => {
 					const error = new Error(
 						"NTP request timed out, server didn't answered"
 					);
-
+					this.socket.close();
 					return reject(error);
 				}, timeout);
 
