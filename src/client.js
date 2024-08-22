@@ -84,11 +84,9 @@ class Client {
 					try {
 						const message = parse(data);
 						return resolve(message);
-					}
-					catch (error) {
+					} catch (error) {
 						return reject(error);
-					}
-					finally {
+					} finally {
 						this.socket.close();
 					}					
 				});
