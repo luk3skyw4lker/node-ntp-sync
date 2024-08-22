@@ -81,11 +81,14 @@ class Client {
 				this.socket.once('message', data => {
 					clearTimeout(timer);
 
-					const message = parse(data);
-
-					this.socket.close();
-
-					return resolve(message);
+					try {
+						const message = parse(data);
+						return resolve(message);
+					} catch (error) {
+						return reject(error);
+					} finally {
+						this.socket.close();
+					}					
 				});
 			});
 		});
