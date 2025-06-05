@@ -4,7 +4,7 @@ const server = new Server();
 server.handle((message, response) => {
 	console.log('Server message:', message);
 
-	message.txTimestamp = Math.floor(Date.now() / 1000);
+	message.transmitTimestamp = Math.floor(Date.now() / 1000);
 
 	response(message);
 });

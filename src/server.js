@@ -53,11 +53,11 @@ class Server extends EventEmitter {
 	parse(message, rinfo) {
 		try {
 			const packet = NTPPacket.parse(message);
-			const rxTimestamp = Math.floor(Date.now() / 1000);
+			const receiveTimestamp = Math.floor(Date.now() / 1000);
 
-			packet.originateTimestamp = Math.floor(packet.txTimestamp);
-			packet.referenceTimestamp = rxTimestamp - 5;
-			packet.rxTimestamp = rxTimestamp;
+			packet.originateTimestamp = Math.floor(packet.transmitTimestamp);
+			packet.referenceTimestamp = receiveTimestamp - 5;
+			packet.receiveTimestamp = receiveTimestamp;
 
 			this.emit('request', packet, this.send.bind(this, rinfo));
 		} catch (error) {
