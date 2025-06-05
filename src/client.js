@@ -7,7 +7,7 @@ const NTP_DELTA = 2208988800;
 function createPacket() {
 	const packet = new NTPPacket(MODES.CLIENT);
 
-	packet.transmitTimestamp = Math.floor(Date.now() / 1000);
+	packet.transmitTimestamp = Date.now() / 1000;
 
 	return packet.bufferize(packet);
 }
@@ -15,8 +15,8 @@ function createPacket() {
 function parse(buffer) {
 	const message = NTPPacket.parse(buffer);
 
-	message.destinationTimestamp = Math.floor(Date.now() / 1000) + NTP_DELTA;
-	message.time = new Date(Math.floor((message.receiveTimestamp - NTP_DELTA) * 1000));
+	message.destinationTimestamp = Date.now() / 1000 + NTP_DELTA;
+	message.time = new Date((message.receiveTimestamp - NTP_DELTA) * 1000);
 
 	// Timestamp Name          ID   When Generated
 	// ------------------------------------------------------------
