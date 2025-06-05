@@ -7,7 +7,7 @@ const NTP_DELTA = 2208988800;
 function createPacket() {
 	const packet = new NTPPacket(MODES.CLIENT);
 
-	packet.txTimestamp = Math.floor(Date.now() / 1000); // should be transmitTimestamp according to index.d.ts
+	packet.transmitTimestamp = Math.floor(Date.now() / 1000);
 
 	return packet.bufferize(packet);
 }
