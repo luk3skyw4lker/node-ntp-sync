@@ -105,7 +105,7 @@ export interface NTPPacket {
    */
   destinationTimestamp: number;
   /**
-   * Same as `destinationTimestamp`, but as a Date object.
+   * Same as `receiveTimestamp`, but as a Date object.
    */
   time: Date;
   /**
