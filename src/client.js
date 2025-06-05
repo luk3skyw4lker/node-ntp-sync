@@ -16,7 +16,7 @@ function parse(buffer) {
 	const message = NTPPacket.parse(buffer);
 
 	message.destinationTimestamp = Math.floor(Date.now() / 1000) + NTP_DELTA;
-	message.time = new Date(Math.floor((message.rxTimestamp - NTP_DELTA) * 1000));
+	message.time = new Date(Math.floor((message.receiveTimestamp - NTP_DELTA) * 1000));
 
 	// Timestamp Name          ID   When Generated
 	// ------------------------------------------------------------
@@ -25,8 +25,8 @@ function parse(buffer) {
 	// Transmit Timestamp      T3   time reply sent by server
 	// Destination Timestamp   T4   time reply received by client
 	const T1 = message.originateTimestamp;
-	const T2 = message.rxTimestamp;
-	const T3 = message.txTimestamp;
+	const T2 = message.receiveTimestamp;
+	const T3 = message.transmitTimestamp;
 	const T4 = message.destinationTimestamp;
 
 	// The roundtrip delay d and system clock offset t are defined as:

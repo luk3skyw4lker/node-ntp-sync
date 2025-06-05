@@ -49,18 +49,18 @@ class NTPPacket {
 	constructor(mode) {
 		Object.assign(this, {
 			mode: mode || 4,
-			leap: 0,
+			leapIndicator: 0,
 			version: 3,
 			stratum: 0,
-			poll: 0,
+			pollInterval: 0,
 			precision: 0,
 			rootDelay: 0,
 			rootDispersion: 0,
-			referenceId: 0,
+			referenceIdentifier: 0,
 			referenceTimestamp: 0,
 			originateTimestamp: 0,
-			rxTimestamp: 0,
-			txTimestamp: 0
+			receiveTimestamp: 0,
+			transmitTimestamp: 0
 		});
 	}
 
@@ -72,15 +72,15 @@ class NTPPacket {
 		const packet = new NTPPacket(4);
 
 		// Control bytes
-		packet.leap = (data[0] >> 6) & 0x3;
+		packet.leapIndicator = (data[0] >> 6) & 0x3;
 		packet.version = (data[0] >> 3) & 0x7;
 		packet.mode = data[0] & 0x7;
 		packet.stratum = parseInt(data[1]) || 2;
-		packet.poll = parseInt(data[2]) || 10;
+		packet.pollInterval = parseInt(data[2]) || 10;
 		packet.precision = parseInt(data[3]);
 		packet.rootDelay = data.slice(4, 8).readFloatBE(0) / 2 ** 16;
 		packet.rootDispersion = data.slice(8, 12).readFloatBE(0) / 2 ** 16;
-		packet.referenceId = data.slice(12, 16);
+		packet.referenceIdentifier = data.slice(12, 16);
 
 		// Timestamps where the 4 first bytes are the
 		// int part and the 4 last are the frac part
@@ -94,11 +94,11 @@ class NTPPacket {
 
 		// const rxTimestampHigh = data.slice(32, 36).readUint32BE();
 		// const rxTimestampLow = data.slice(36, 40).readUint32BE();
-		packet.rxTimestamp = toMsecs(data, 32);
+		packet.receiveTimestamp = toMsecs(data, 32);
 
 		// const txTimestampHigh = data.slice(40, 44).readUint32BE();
 		// const txTimestampLow = data.slice(44, 48).readUint32BE();
-		packet.txTimestamp = toMsecs(data, 40);
+		packet.transmitTimestamp = toMsecs(data, 40);
 
 		return packet;
 	}
@@ -106,14 +106,14 @@ class NTPPacket {
 	bufferize(packet) {
 		const buffer = Buffer.alloc(48).fill(0x00);
 
-		buffer[0] = (packet.leap << 6) | (packet.version << 3) | (this.mode << 0);
+		buffer[0] = (packet.leapIndicator << 6) | (packet.version << 3) | (this.mode << 0);
 		buffer[1] = packet.stratum;
-		buffer[2] = packet.poll;
+		buffer[2] = packet.pollInterval;
 		buffer[3] = packet.precision;
 
 		buffer.writeUInt32BE(packet.rootDelay, 4);
 		buffer.writeUInt32BE(packet.rootDispersion, 8);
-		buffer.writeUInt32BE(packet.referenceId, 12);
+		buffer.writeUInt32BE(packet.referenceIdentifier, 12);
 
 		// Reference Timestamp
 		writeInMillis(buffer, 16, packet.referenceTimestamp, true);
@@ -127,10 +127,10 @@ class NTPPacket {
 		);
 
 		// RX Timestamp
-		writeInMillis(buffer, 32, packet.rxTimestamp, true);
+		writeInMillis(buffer, 32, packet.receiveTimestamp, true);
 
 		// TX Timestamp
-		writeInMillis(buffer, 40, packet.txTimestamp, true);
+		writeInMillis(buffer, 40, packet.transmitTimestamp, true);
 
 		return buffer;
 	}
