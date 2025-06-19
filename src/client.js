@@ -46,7 +46,6 @@ class Client {
 	) {
 		this.server = server;
 		this.port = port;
-		this.socket = udp.createSocket('udp4');
 		this.options = options;
 
 		return this;
