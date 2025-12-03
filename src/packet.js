@@ -78,8 +78,8 @@ class NTPPacket {
 		packet.stratum = parseInt(data[1]) || 2;
 		packet.pollInterval = parseInt(data[2]) || 10;
 		packet.precision = parseInt(data[3]);
-		packet.rootDelay = data.slice(4, 8).readFloatBE(0) / 2 ** 16;
-		packet.rootDispersion = data.slice(8, 12).readFloatBE(0) / 2 ** 16;
+		packet.rootDelay = data.readUInt32BE(4) / (2 ** 16);
+		packet.rootDispersion = data.readUInt32BE(8) / (2 ** 16);
 		packet.referenceIdentifier = data.slice(12, 16);
 
 		// Timestamps where the 4 first bytes are the
