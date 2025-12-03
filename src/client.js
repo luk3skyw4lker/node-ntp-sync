@@ -72,7 +72,7 @@ class Client {
 
 				const timer = setTimeout(() => {
 					const error = new Error(
-						"NTP request timed out, server didn't answered"
+						"NTP request timed out, server didn't answer"
 					);
 					this.socket.close();
 					return reject(error);
