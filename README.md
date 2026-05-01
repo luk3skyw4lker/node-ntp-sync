@@ -1,6 +1,6 @@
 # ntp-time
 
-[![NPM](https://nodei.co/npm/ntp-time.png?compact=true)](https://nodei.co/npm/ntp-time/)
+![npm version](https://img.shields.io/npm/v/ntp-time) ![npm downloads](https://shields.io/npm/d18m/ntp-time)
 
 ## Installation
 
